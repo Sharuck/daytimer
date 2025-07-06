@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import dayjs from 'dayjs';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
   const [start, setStart] = useState('');
@@ -20,19 +21,49 @@ function App() {
     return `${diffInHours} hours total (${diffInDays} day(s) ${remainingHours} hour(s))`;
   };
 
+  const result = calculateDuration();
+
   return (
-    <div className="container">
-      <h1>Duration Calculator</h1>
+    <motion.div
+      className="container"
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <h1>⏱ Duration Calculator</h1>
       <label>Start Date & Time</label>
-      <input type="datetime-local" value={start} onChange={(e) => setStart(e.target.value)} />
+      <motion.input
+        type="datetime-local"
+        value={start}
+        onChange={(e) => setStart(e.target.value)}
+        whileFocus={{ scale: 1.02 }}
+        transition={{ type: 'spring', stiffness: 300 }}
+      />
 
       <label>End Date & Time</label>
-      <input type="datetime-local" value={end} onChange={(e) => setEnd(e.target.value)} />
+      <motion.input
+        type="datetime-local"
+        value={end}
+        onChange={(e) => setEnd(e.target.value)}
+        whileFocus={{ scale: 1.02 }}
+        transition={{ type: 'spring', stiffness: 300 }}
+      />
 
-      <div className="result">
-        <strong>Duration:</strong> {calculateDuration() || 'Please enter both dates.'}
-      </div>
-    </div>
+      <AnimatePresence>
+        {result && (
+          <motion.div
+            className="result"
+            key="result"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <strong>Duration:</strong> {result}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
